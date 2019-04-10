@@ -1,10 +1,10 @@
-Name:           eigen
+Name:           eigen3
 Version:        %{VERSION}
 Release:        %{RELEASE}%{?dist}
 Summary:        A lightweight C++ template library for vector and matrix math
 License:        MPLv2.0 and LGPLv2+ and BSD
 URL:            http://eigen.tuxfamily.org/index.php?title=Main_Page
-Source:         %{name}-%{version}.tar.gz
+Source:         eigen-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  atlas-devel
@@ -13,13 +13,9 @@ BuildRequires:  glew-devel
 BuildRequires:  gmp-devel
 BuildRequires:  gsl-devel
 BuildRequires:  mpfr-devel
-#BuildRequires:  sparsehash-devel
-#BuildRequires:  suitesparse-devel
 BuildRequires:  gcc-gfortran
 BuildRequires:  SuperLU-devel
 BuildRequires:  qt-devel
-#BuildRequires:  scotch-devel
-BuildRequires:  metis-devel
 
 BuildRequires:  cmake
 BuildRequires:  make
@@ -30,7 +26,6 @@ BuildRequires:  graphviz
 
 %description
 %{summary}.
-
 
 %package devel
 Summary:        A lightweight C++ template library for vector and matrix math
@@ -58,10 +53,7 @@ Developer documentation for Eigen.
 mkdir %{_target_platform}
 pushd %{_target_platform}
 %cmake .. -DINCLUDE_INSTALL_DIR=%{_includedir}/eigen3 \
-  -DBLAS_LIBRARIES="cblas" \
-  -DSUPERLU_INCLUDES=%{_includedir}/SuperLU \
-  -DSCOTCH_INCLUDES=%{_includedir} -DSCOTCH_LIBRARIES="scotch" \
-  -DMETIS_INCLUDES=%{_includedir} -DMETIS_LIBRARIES="metis" \
+  -DEIGEN_TEST_CXX11=ON \
   -DCMAKEPACKAGE_INSTALL_DIR=%{_datadir}/%{name}
 popd
 
@@ -77,16 +69,14 @@ rm -f %{_target_platform}/doc/html/unsupported/installdox
 %check
 # Run tests but make failures non-fatal. Note that upstream doesn't expect the
 # tests to pass consistently since they're seeded randomly.
-#make_build buildtests -C %{_target_platform}
 #make_build test -C %{_target_platform} test ARGS="-V" || :
-
 
 %files devel
 %license COPYING.README COPYING.BSD COPYING.MPL2 COPYING.LGPL
 %{_includedir}/eigen3
 %{_datadir}/%{name}
 %{_datadir}/pkgconfig/*
-%{_datadir}/cmake/Modules/*.cmake
+%{_datadir}/eigen3/*.cmake
 
 %files doc
 %doc %{_target_platform}/doc/html
